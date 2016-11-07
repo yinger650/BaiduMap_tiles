@@ -66,4 +66,6 @@ if __name__ == "__main__":
     lat_start, lon_start = 31.022547,121.429391
     lat_stop, lon_stop = 31.041453,121.45749
         
-    download_tiles(zoom, lat_start, lat_stop, lon_start, lon_stop, satellite=False)
+	satellite=False
+	
+    download_tiles(zoom, lat_start, lat_stop, lon_start, lon_stop, satellite)
