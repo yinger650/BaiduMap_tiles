@@ -8,9 +8,12 @@ def merge_tiles(zoom, lat_start, lat_stop, lon_start, lon_stop, satellite=True):
     if satellite:
         TYPE, ext = 's', 'jpg'
     
-    x_start, y_start = latlon2xy(zoom, lat_start, lon_start)
-    x_stop, y_stop = latlon2xy(zoom, lat_stop, lon_stop)
-    
+    x_start, y_start = bd_latlng2xy(zoom, lat_start, lon_start)
+    x_stop, y_stop = bd_latlng2xy(zoom, lat_stop, lon_stop)
+    x_start = int(x_start/256)
+    y_start = int(y_start/256)
+    x_stop = int(x_stop/256)
+    y_stop = int(y_stop/256)
     print "x range", x_start, x_stop
     print "y range", y_start, y_stop
     
@@ -32,7 +35,7 @@ def merge_tiles(zoom, lat_start, lat_stop, lon_start, lon_stop, satellite=True):
                 continue
                     
             x_paste = (x - x_start) * 256
-            y_paste = h - (y_stop - y) * 256
+            y_paste = (y_stop - y) * 256
             
             try:
                 i = Image.open(filename)
@@ -50,9 +53,9 @@ def merge_tiles(zoom, lat_start, lat_stop, lon_start, lon_stop, satellite=True):
 
 if __name__ == "__main__":
     
-    zoom = 15
-
-    lat_start, lon_start = 46.53, 6.6
-    lat_stop, lon_stop = 46.49, 6.7
+    zoom = 19
+ 
+    lat_start, lon_start = 31.022547,121.429391
+    lat_stop, lon_stop = 31.041453,121.45749
     
-    merge_tiles(zoom, lat_start, lat_stop, lon_start, lon_stop, satellite=True)
+    merge_tiles(zoom, lat_start, lat_stop, lon_start, lon_stop, satellite=False)

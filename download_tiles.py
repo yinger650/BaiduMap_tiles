@@ -2,6 +2,7 @@
 
 import urllib2
 import os, sys
+import math
 from gmap_utils import *
 
 import time
@@ -9,14 +10,17 @@ import random
 
 def download_tiles(zoom, lat_start, lat_stop, lon_start, lon_stop, satellite=True):
 
-    start_x, start_y = latlon2xy(zoom, lat_start, lon_start)
-    stop_x, stop_y = latlon2xy(zoom, lat_stop, lon_stop)
+    start_x, start_y = bd_latlng2xy(zoom, lat_start, lon_start)
+    stop_x, stop_y = bd_latlng2xy(zoom, lat_stop, lon_stop)
+    
+    start_x = int(start_x//256)
+    start_y = int(start_y//256)
+    stop_x = int(stop_x//256)
+    stop_y = int(stop_y//256)
     
     print "x range", start_x, stop_x
     print "y range", start_y, stop_y
     
-    user_agent = 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_8; de-at) AppleWebKit/533.21.1 (KHTML, like Gecko) Version/5.0.5 Safari/533.21.1'
-    headers = { 'User-Agent' : user_agent }
     
     for x in xrange(start_x, stop_x):
         for y in xrange(start_y, stop_y):
@@ -25,10 +29,10 @@ def download_tiles(zoom, lat_start, lat_stop, lon_start, lon_stop, satellite=Tru
             filename = None
             
             if satellite:        
-                url = "http://khm1.google.com/kh?v=87&hl=en&x=%d&y=%d&z=%d" % (x, y, zoom)
+                url = "http://shangetu0.map.bdimg.com/it/u=x=%d;y=%d;z=%d;v=009;type=sate&fm=46&udt=20150504&app=webearth2&v=009&udt=20150601" % (x, y, zoom)
                 filename = "%d_%d_%d_s.jpg" % (zoom, x, y)
             else:
-                url = "http://mt1.google.com/vt/lyrs=h@162000000&hl=en&x=%d&s=&y=%d&z=%d" % (x, y, zoom)
+                url = "http://online0.map.bdimg.com/onlinelabel/?qt=tile&x=%d&y=%d&z=%d&styles=pl&udt=20160918&scaler=1&p=0" % (x, y, zoom)
                 filename = "%d_%d_%d_r.png" % (zoom, x, y)    
     
             if not os.path.exists(filename):
@@ -36,7 +40,7 @@ def download_tiles(zoom, lat_start, lat_stop, lon_start, lon_stop, satellite=Tru
                 bytes = None
                 
                 try:
-                    req = urllib2.Request(url, data=None, headers=headers)
+                    req = urllib2.Request(url, data=None)
                     response = urllib2.urlopen(req)
                     bytes = response.read()
                 except Exception, e:
@@ -57,9 +61,9 @@ def download_tiles(zoom, lat_start, lat_stop, lon_start, lon_stop, satellite=Tru
 
 if __name__ == "__main__":
     
-    zoom = 15
-
-    lat_start, lon_start = 46.53, 6.6
-    lat_stop, lon_stop = 46.49, 6.7
+    zoom = 19
+ 
+    lat_start, lon_start = 31.022547,121.429391
+    lat_stop, lon_stop = 31.041453,121.45749
         
-    download_tiles(zoom, lat_start, lat_stop, lon_start, lon_stop, satellite=True)
+    download_tiles(zoom, lat_start, lat_stop, lon_start, lon_stop, satellite=False)
